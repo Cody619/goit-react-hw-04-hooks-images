@@ -6,15 +6,10 @@ import axios from 'axios'
 import { Searchbar } from './components/Searchbar'
 import { ImageGallery } from './components/ImageGallery'
 import { Button } from './components/Button'
-
+import { api_key } from './components/Services'
 import './App.css'
 
-const api_key = '24139872-fead068626907a7ba14cf06e1'
-const base_URL = 'https://pixabay.com/api/'
-
-axios.defaults.baseURL = base_URL
-
-const App = (props) => {
+const App = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [imgs, setImgs] = useState([])
 
@@ -37,8 +32,6 @@ const App = (props) => {
     })
 
     axios.get('?' + params).then((response) => {
-      console.log('response.data.imgs', response.data.hits)
-
       setImgs(response.data.hits)
       setIsLoading(false)
     })
