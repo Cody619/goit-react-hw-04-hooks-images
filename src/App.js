@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
 import Loader from 'react-loader-spinner'
-import queryString from 'query-string'
-import axios from 'axios'
-
 import { Searchbar } from './components/Searchbar'
 import { ImageGallery } from './components/ImageGallery'
 import { Button } from './components/Button'
-import { api_key } from './components/Services'
+import { getImages } from './services/API'
 import './App.css'
 
 const App = () => {
@@ -22,19 +19,12 @@ const App = () => {
     currentPageRef.current = 1
     lastSearchTextRef.current = searchText
 
-    const params = queryString.stringify({
-      key: api_key,
-      q: searchText,
-      pege: 1,
-      per_page: 12,
-      image_type: 'photo',
-      orientation: 'horizontal',
-    })
-
-    axios.get('?' + params).then((response) => {
-      setImgs(response.data.hits)
-      setIsLoading(false)
-    })
+    getImages(lastSearchTextRef.current, currentPageRef.current).then(
+      (response) => {
+        setImgs(response.data.hits)
+        setIsLoading(false)
+      },
+    )
   }
 
   const loadMore = () => {
@@ -42,19 +32,12 @@ const App = () => {
 
     currentPageRef.current += 1
 
-    const params = queryString.stringify({
-      key: api_key,
-      q: lastSearchTextRef.current,
-      page: currentPageRef.current,
-      per_page: 12,
-      image_type: 'photo',
-      orientation: 'horizontal',
-    })
-
-    axios.get('?' + params).then((response) => {
-      setIsLoading(false)
-      setImgs((imgs) => [...imgs, ...response.data.hits])
-    })
+    getImages(lastSearchTextRef.current, currentPageRef.current).then(
+      (response) => {
+        setIsLoading(false)
+        setImgs((imgs) => [...imgs, ...response.data.hits])
+      },
+    )
   }
 
   useEffect(() => {
